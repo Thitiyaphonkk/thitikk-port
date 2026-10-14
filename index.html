@@ -107,7 +107,11 @@
                     <div class="relative">
                         <div class="w-36 h-36 sm:w-44 sm:h-44 rounded-full bg-gradient-to-tr from-amber-400 via-amber-300 to-amber-100 p-1.5 shadow-xl">
                             <div class="w-full h-full rounded-full bg-stone-100 dark:bg-stone-800 flex items-center justify-center overflow-hidden relative">
-                                <span class="text-4xl sm:text-5xl font-bold text-amber-600 dark:text-amber-400">ฐล</span>
+                                <img id="profileImg" src="profile.png" alt="ฐิติยาพร ลิ้มกลาง" class="w-full h-full object-cover" onerror="handleImageError(this)">
+                                <div id="avatarFallback" class="hidden flex-col items-center justify-center text-amber-600 dark:text-amber-400 p-2 text-center">
+                                    <i class="fa-solid fa-sun text-4xl mb-1"></i>
+                                    <span class="text-xs font-bold">ฐิติยาพร</span>
+                                </div>
                             </div>
                         </div>
                         <span class="absolute bottom-2 right-2 bg-emerald-500 border-2 border-white dark:border-stone-900 w-5 h-5 rounded-full" title="พร้อมสำหรับการเรียนรู้และร่วมงาน"></span>
@@ -434,19 +438,6 @@
                 <div class="space-y-4">
                     <div class="glass-card p-5 rounded-2xl flex items-center gap-4">
                         <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl shrink-0">
-                            <i class="fa-solid fa-phone"></i>
-                        </div>
-                        <div class="flex-1">
-                            <p class="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase">เบอร์โทรศัพท์</p>
-                            <p class="text-lg font-bold text-stone-900 dark:text-white">081-2079368</p>
-                        </div>
-                        <button onclick="copyToClipboard('0812079368')" class="px-3 py-1.5 rounded-lg bg-stone-200/80 dark:bg-stone-800 text-xs font-semibold hover:bg-amber-400 hover:text-stone-900 transition-all">
-                            คัดลอก
-                        </button>
-                    </div>
-
-                    <div class="glass-card p-5 rounded-2xl flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl shrink-0">
                             <i class="fa-solid fa-envelope"></i>
                         </div>
                         <div class="flex-1 overflow-hidden">
@@ -525,88 +516,22 @@
     </div>
 
     <script>
-        // Theme Toggle Handler
-        function toggleTheme() {
-            const html = document.documentElement;
-            const icon = document.getElementById('themeIcon');
-            if (html.classList.contains('dark')) {
-                html.classList.remove('dark');
-                icon.className = 'fa-solid fa-moon';
-                localStorage.setItem('theme', 'light');
+        // Image Fallback Handler to auto-try png, jpg, jpeg
+        const imgFormats = ['profile.png', 'profile.jpg', 'profile.jpeg', 'profile.PNG', 'profile.JPG'];
+        let imgIndex = 0;
+        function handleImageError(img) {
+            imgIndex++;
+            if (imgIndex < imgFormats.length) {
+                img.src = imgFormats[imgIndex];
             } else {
-                html.classList.add('dark');
-                icon.className = 'fa-solid fa-sun';
-                localStorage.setItem('theme', 'dark');
+                img.style.display = 'none';
+                const fallback = document.getElementById('avatarFallback');
+                if (fallback) {
+                    fallback.classList.remove('hidden');
+                    fallback.classList.add('flex');
+                }
             }
         }
 
-        // Initialize Theme from Saved Preference
-        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-            document.getElementById('themeIcon').className = 'fa-solid fa-sun';
-        }
-
-        // Mobile Menu Toggle
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobileMenu');
-            menu.classList.toggle('hidden');
-        }
-
-        // Portfolio Filtering
-        function filterPortfolio(category) {
-            const items = document.querySelectorAll('.port-item');
-            const tabs = document.querySelectorAll('.port-tab');
-
-            tabs.forEach(tab => {
-                tab.classList.remove('bg-amber-400', 'text-stone-900');
-                tab.classList.add('bg-stone-200/70', 'dark:bg-stone-800', 'text-stone-700', 'dark:text-stone-300');
-            });
-
-            event.currentTarget.classList.remove('bg-stone-200/70', 'dark:bg-stone-800', 'text-stone-700', 'dark:text-stone-300');
-            event.currentTarget.classList.add('bg-amber-400', 'text-stone-900');
-
-            items.forEach(item => {
-                if (category === 'all' || item.classList.contains(category)) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        }
-
-        // Copy Helper Function
-        function copyToClipboard(text) {
-            const tempInput = document.createElement("input");
-            tempInput.value = text;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand("copy");
-            document.body.removeChild(tempInput);
-
-            showToast("คัดลอก " + text + " เรียบร้อยแล้ว!");
-        }
-
-        // Toast Notification System
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            const toastMsg = document.getElementById('toastMsg');
-            toastMsg.innerText = message;
-            
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            toast.classList.add('translate-y-0', 'opacity-100');
-
-            setTimeout(() => {
-                toast.classList.remove('translate-y-0', 'opacity-100');
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
-
-        // Form Submit Handler Simulation
-        function handleContactSubmit(event) {
-            event.preventDefault();
-            showToast("ขอบคุณสำหรับการติดต่อ! ได้รับข้อความแล้วครับ/ค่ะ");
-            event.target.reset();
-        }
-    </script>
-</body>
-</html>
+        // Theme Toggle Handler
+        function toggleTheme() {
