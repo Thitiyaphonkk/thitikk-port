@@ -107,7 +107,7 @@
                     <div class="relative">
                         <div class="w-36 h-36 sm:w-44 sm:h-44 rounded-full bg-gradient-to-tr from-amber-400 via-amber-300 to-amber-100 p-1.5 shadow-xl">
                             <div class="w-full h-full rounded-full bg-stone-100 dark:bg-stone-800 flex items-center justify-center overflow-hidden relative">
-                                <img id="profileImg" src="profile.png" alt="ฐิติยาพร ลิ้มกลาง" class="w-full h-full object-cover" onerror="handleImageError(this)">
+                                <img id="profileImg" src="https://raw.githubusercontent.com/Thitiyaphonkk/thitikk-port/main/%E0%B8%AA%E0%B8%B5%E0%B9%80%E0%B8%AB%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%87%20%E0%B8%99%E0%B9%88%E0%B8%B2%E0%B8%A3%E0%B8%B1%E0%B8%81%20%E0%B8%AA%E0%B8%99%E0%B8%B8%E0%B8%81%E0%B8%AA%E0%B8%99%E0%B8%B2%E0%B8%99%20%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%A7%E0%B8%B1%E0%B8%95%E0%B8%B4%E0%B8%AA%E0%B9%88%E0%B8%A7%E0%B8%99%E0%B8%95%E0%B8%B1%E0%B8%A7%20%E0%B8%AA%E0%B8%A1%E0%B8%B1%E0%B8%84%E0%B8%A3%E0%B8%87%E0%B8%B2%E0%B8%99%20%E0%B9%80%E0%B8%A3%E0%B8%8B%E0%B8%B9%E0%B9%80%E0%B8%A1%E0%B9%88.png" alt="ฐิติยาพร ลิ้มกลาง" class="w-full h-full object-cover" onerror="handleImageError(this)">
                                 <div id="avatarFallback" class="hidden flex-col items-center justify-center text-amber-600 dark:text-amber-400 p-2 text-center">
                                     <i class="fa-solid fa-sun text-4xl mb-1"></i>
                                     <span class="text-xs font-bold">ฐิติยาพร</span>
@@ -516,8 +516,14 @@
     </div>
 
     <script>
-        // Image Fallback Handler to auto-try png, jpg, jpeg
-        const imgFormats = ['profile.png', 'profile.jpg', 'profile.jpeg', 'profile.PNG', 'profile.JPG'];
+        // Image Fallback Handler to auto-try github raw url and local filenames
+        const imgFormats = [
+            'https://raw.githubusercontent.com/Thitiyaphonkk/thitikk-port/main/%E0%B8%AA%E0%B8%B5%E0%B9%80%E0%B8%AB%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%87%20%E0%B8%99%E0%B9%88%E0%B8%B2%E0%B8%A3%E0%B8%B1%E0%B8%81%20%E0%B8%AA%E0%B8%99%E0%B8%B8%E0%B8%81%E0%B8%AA%E0%B8%99%E0%B8%B2%E0%B8%99%20%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%A7%E0%B8%B1%E0%B8%95%E0%B8%B4%E0%B8%AA%E0%B9%88%E0%B8%A7%E0%B8%99%E0%B8%95%E0%B8%B1%E0%B8%A7%20%E0%B8%AA%E0%B8%A1%E0%B8%B1%E0%B8%84%E0%B8%A3%E0%B8%87%E0%B8%B2%E0%B8%99%20%E0%B9%80%E0%B8%A3%E0%B8%8B%E0%B8%B9%E0%B9%80%E0%B8%A1%E0%B9%88.png',
+            'สีเหลือง น่ารัก สนุกสนาน ประวัติส่วนตัว สมัครงาน เรซูเม่.png',
+            'profile.png',
+            'profile.jpg',
+            'profile.jpeg'
+        ];
         let imgIndex = 0;
         function handleImageError(img) {
             imgIndex++;
@@ -535,3 +541,86 @@
 
         // Theme Toggle Handler
         function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.className = 'fa-solid fa-moon';
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                icon.className = 'fa-solid fa-sun';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Initialize Theme from Saved Preference
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            document.getElementById('themeIcon').className = 'fa-solid fa-sun';
+        }
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Portfolio Filtering
+        function filterPortfolio(category) {
+            const items = document.querySelectorAll('.port-item');
+            const tabs = document.querySelectorAll('.port-tab');
+
+            tabs.forEach(tab => {
+                tab.classList.remove('bg-amber-400', 'text-stone-900');
+                tab.classList.add('bg-stone-200/70', 'dark:bg-stone-800', 'text-stone-700', 'dark:text-stone-300');
+            });
+
+            event.currentTarget.classList.remove('bg-stone-200/70', 'dark:bg-stone-800', 'text-stone-700', 'dark:text-stone-300');
+            event.currentTarget.classList.add('bg-amber-400', 'text-stone-900');
+
+            items.forEach(item => {
+                if (category === 'all' || item.classList.contains(category)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Copy Helper Function
+        function copyToClipboard(text) {
+            const tempInput = document.createElement("input");
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            showToast("คัดลอก " + text + " เรียบร้อยแล้ว!");
+        }
+
+        // Toast Notification System
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            toastMsg.innerText = message;
+            
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Form Submit Handler Simulation
+        function handleContactSubmit(event) {
+            event.preventDefault();
+            showToast("ขอบคุณสำหรับการติดต่อ! ได้รับข้อความแล้วครับ/ค่ะ");
+            event.target.reset();
+        }
+    </script>
+</body>
+</html>
